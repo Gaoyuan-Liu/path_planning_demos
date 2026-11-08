@@ -1,0 +1,11 @@
+# environment and caches
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# generated media (videos/ is rebuilt by rrt_videos.py, captures/ by the Capture button)
+videos/
+captures/
+*.mp4
+*.gif

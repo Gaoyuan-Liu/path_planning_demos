@@ -1,0 +1,31 @@
+% Random walk in the style of method.png. Rendered to ../randomwalk.png for randomwalk_demo.py:
+%   tectonic randomwalk.tex && uv run --with pymupdf python render_png.py randomwalk.pdf ../randomwalk.png
+\documentclass[11pt]{article}
+\usepackage[paperwidth=14.2cm,paperheight=12cm,margin=0.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\pagestyle{empty}
+\setcounter{algorithm}{3}
+
+\begin{document}
+\begin{algorithm}[t]
+\caption{Random walk}
+\begin{algorithmic}[1]
+\Function{RandomWalk}{$q_{\text{start}}, q_{\text{goal}}, \Delta$}
+  \State $q \gets q_{\text{start}}$;\ \ $P \gets (q_{\text{start}})$
+  \Repeat
+    \State $\theta \gets \textsc{RandomAngle}$
+    \State $q_{\text{new}} \gets q + \Delta\,(\cos\theta, \sin\theta)$
+    \If{$\neg$\Call{CollisionFree}{$q, q_{\text{new}}$}}
+      \State \textbf{continue}
+    \EndIf
+    \State $q \gets q_{\text{new}}$;\ \ \Call{Append}{$P, q$}
+    \If{$\lVert q - q_{\text{goal}} \rVert \le \Delta$ and \Call{CollisionFree}{$q, q_{\text{goal}}$}}
+      \State \Return \Call{Append}{$P, q_{\text{goal}}$}
+    \EndIf
+  \Until{false}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\end{document}

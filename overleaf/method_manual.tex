@@ -1,0 +1,32 @@
+% Same as method.png (Algorithm 1), except line 4: q_rand is the point clicked by the user.
+% Rendered to ../method_manual.png for rrt_manual.py.
+\documentclass[11pt]{article}
+\usepackage[paperwidth=14.2cm,paperheight=11cm,margin=0.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\pagestyle{empty}
+
+\begin{document}
+\begin{algorithm}[t]
+\caption{Rapidly-exploring Random Tree (RRT), user-chosen samples}
+\begin{algorithmic}[1]
+\Function{RRT}{$q_{\text{start}}, q_{\text{goal}}, \Delta$}
+  \State $T \gets \{q_{\text{start}}\}$
+  \Repeat
+    \State $q_{\text{rand}} \gets \textsc{PointClickedByUser}$
+    \State $q_{\text{near}} \gets \Call{Nearest}{T, q_{\text{rand}}}$
+    \State $q_{\text{new}} \gets \Call{Steer}{q_{\text{near}}, q_{\text{rand}}, \Delta}$
+    \If{$\neg$\Call{CollisionFree}{$q_{\text{near}}, q_{\text{new}}$}}
+      \State \textbf{continue}
+    \EndIf
+    \State $T \gets T \cup \{q_{\text{new}}\}$
+    \If{$\lVert q_{\text{new}} - q_{\text{goal}} \rVert \le \Delta$ and \Call{CollisionFree}{$q_{\text{new}}, q_{\text{goal}}$}}
+      \State $T \gets T \cup \{q_{\text{goal}}\}$
+      \State \Return \Call{ReconstructPath}{$T, \text{parent}, q_{\text{goal}}$}
+    \EndIf
+  \Until{false}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\end{document}

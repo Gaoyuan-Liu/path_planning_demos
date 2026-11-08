@@ -1,0 +1,41 @@
+% Dijkstra in the style of method.png; same lines as astar.tex except 1 and 4.
+% Rendered to ../dijkstra.png for dijkstra_demo.py:
+%   tectonic dijkstra.tex && uv run --with pymupdf python render_png.py dijkstra.pdf ../dijkstra.png
+\documentclass[11pt]{article}
+\usepackage[paperwidth=14.2cm,paperheight=16cm,margin=0.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\pagestyle{empty}
+\setcounter{algorithm}{2}
+\newcommand{\Open}{\mathrm{OPEN}}
+\newcommand{\Closed}{\mathrm{CLOSED}}
+
+\begin{document}
+\begin{algorithm}[t]
+\caption{Dijkstra's algorithm on the grid}
+\begin{algorithmic}[1]
+\Function{Dijkstra}{$s_{\text{start}}, s_{\text{goal}}$}
+  \State $g(s_{\text{start}}) \gets 0$;\ \ $\Open \gets \{s_{\text{start}}\}$;\ \ $\Closed \gets \emptyset$
+  \While{$\Open \neq \emptyset$}
+    \State $s \gets \operatorname{arg\,min}_{s \in \Open}\ g(s)$
+    \If{$s = s_{\text{goal}}$}
+      \State \Return \Call{ReconstructPath}{$\text{parent}, s_{\text{goal}}$}
+    \EndIf
+    \State $\Open \gets \Open \setminus \{s\}$;\ \ $\Closed \gets \Closed \cup \{s\}$
+    \ForAll{$s' \in \Call{Neighbors}{s}$}
+      \If{$s' \in \Closed \lor \neg$\Call{CollisionFree}{$s, s'$}}
+        \State \textbf{continue}
+      \EndIf
+      \State $g' \gets g(s) + \Call{Cost}{s, s'}$
+      \If{$s' \notin \Open \lor g' < g(s')$}
+        \State $g(s') \gets g'$;\ \ $\text{parent}(s') \gets s$
+        \State $\Open \gets \Open \cup \{s'\}$
+      \EndIf
+    \EndFor
+  \EndWhile
+  \State \Return failure
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\end{document}

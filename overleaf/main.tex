@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
+\algnewcommand{\Continue}{\textbf{continue}}
+
+\title{Rapidly-exploring Random Tree (RRT)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{algorithm}[h]
+\caption{RRT}
+\label{alg:rrt}
+\begin{algorithmic}[1]
+\Require start $x_{\text{start}}$, goal $x_{\text{goal}}$, step size $\Delta$, goal bias $p_{\text{goal}}$
+\Ensure a collision-free path from $x_{\text{start}}$ to $x_{\text{goal}}$
+\State $T \gets \{x_{\text{start}}\}$
+\Repeat
+  \State $x_{\text{rand}} \gets$ random point in the whole map
+         \Comment{$x_{\text{goal}}$ with prob.\ $p_{\text{goal}}$}
+  \State $x_{\text{near}} \gets \Call{Nearest}{T, x_{\text{rand}}}$
+  \State $x_{\text{new}} \gets \Call{Steer}{x_{\text{near}}, x_{\text{rand}}, \Delta}$
+  \If{\textbf{not} \Call{CollisionFree}{$x_{\text{near}}, x_{\text{new}}$}}
+    \State discard $x_{\text{new}}$; \Continue
+  \EndIf
+  \State $T.\Call{Add}{x_{\text{new}},\ \text{parent} = x_{\text{near}}}$
+  \If{$\lVert x_{\text{new}} - x_{\text{goal}} \rVert \le \Delta$ \textbf{and} \Call{CollisionFree}{$x_{\text{new}}, x_{\text{goal}}$}}
+    \State $T.\Call{Add}{x_{\text{goal}},\ \text{parent} = x_{\text{new}}}$
+    \State \Return path $x_{\text{start}} \to x_{\text{goal}}$ (follow parents back from $x_{\text{goal}}$)
+  \EndIf
+\Until{path found}
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Subroutines.}
+\begin{itemize}
+  \item $\Call{Nearest}{T, x}$: the tree node closest to $x$ in Euclidean distance.
+  \item $\Call{Steer}{x_{\text{near}}, x_{\text{rand}}, \Delta}
+        = x_{\text{near}} + \min\!\left(\Delta, \lVert d \rVert\right) \dfrac{d}{\lVert d \rVert}$,
+        \quad $d = x_{\text{rand}} - x_{\text{near}}$,
+        i.e.\ move from $x_{\text{near}}$ toward $x_{\text{rand}}$ by at most $\Delta$.
+  \item $\Call{CollisionFree}{a, b}$: true if the segment $a \to b$ does not intersect any
+        obstacle (walls inflated by a safety margin).
+\end{itemize}
+
+\end{document}
